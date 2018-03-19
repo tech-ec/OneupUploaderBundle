@@ -52,6 +52,8 @@ class GaufretteStorage extends StreamManager implements StorageInterface
         $this->openStream($dst, 'w');
         $this->stream($file, $dst);
 
+        $mimetype = $file->getMimeType();
+        
         if ($file instanceof GaufretteFile) {
             $file->delete();
         } else {
@@ -60,7 +62,7 @@ class GaufretteStorage extends StreamManager implements StorageInterface
         }
 
         if ($this->filesystem->getAdapter() instanceof MetadataSupporter) {
-            $this->filesystem->getAdapter()->setMetadata($name, ['contentType' => $file->getMimeType()]);
+            $this->filesystem->getAdapter()->setMetadata($name, ['contentType' => $mimetype]);
         }
         
         return new GaufretteFile($this->filesystem->get($path), $this->filesystem, $this->streamWrapperPrefix);
