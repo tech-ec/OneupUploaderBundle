@@ -38,10 +38,6 @@ class GaufretteStorage extends StreamManager implements StorageInterface
     {
         $path = null === $path ? $name : sprintf('%s/%s', $path, $name);
 
-        if ($this->filesystem->getAdapter() instanceof MetadataSupporter) {
-            $this->filesystem->getAdapter()->setMetadata($name, ['contentType' => $file->getMimeType()]);
-        }
-
         if ($file instanceof GaufretteFile) {
             if ($file->getFilesystem() === $this->filesystem) {
                 $file->getFilesystem()->rename($file->getKey(), $path);
@@ -63,6 +59,10 @@ class GaufretteStorage extends StreamManager implements StorageInterface
             $filesystem->remove($file->getPathname());
         }
 
+        if ($this->filesystem->getAdapter() instanceof MetadataSupporter) {
+            $this->filesystem->getAdapter()->setMetadata($name, ['contentType' => $file->getMimeType()]);
+        }
+        
         return new GaufretteFile($this->filesystem->get($path), $this->filesystem, $this->streamWrapperPrefix);
     }
 }
